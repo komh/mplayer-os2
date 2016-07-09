@@ -1,0 +1,32 @@
+From 8e6e084eff88dbf2d32b1221e9ea93ef570b3c0c Mon Sep 17 00:00:00 2001
+From: KO Myung-Hun <komh@chollian.net>
+Date: Mon, 29 Sep 2014 15:27:47 +0900
+Subject: [PATCH 2/5] module.c: fix compilation
+
+-----
+loader/module.c: In function 'dump_component':
+loader/module.c:702:12: error: 'orig' redeclared as different kind of symbol
+     int ( *orig)(ComponentParameters *params, void** glob) = orig;
+            ^
+---
+ loader/module.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/loader/module.c b/loader/module.c
+index 1a45efc..0dde75a 100644
+--- a/loader/module.c
++++ b/loader/module.c
+@@ -698,8 +698,8 @@ return "???";
+ 
+ static int c_level=0;
+ 
+-static int dump_component(char* name, int type, void* orig, ComponentParameters *params,void** glob){
+-    int ( *orig)(ComponentParameters *params, void** glob) = orig;
++static int dump_component(char* name, int type, void* org, ComponentParameters *params,void** glob){
++    int ( *orig)(ComponentParameters *params, void** glob) = org;
+     int ret,i;
+ 
+     fprintf(stderr,"%*sComponentCall: %s  flags=0x%X  size=%d  what=0x%X %s\n",3*c_level,"",name,params->flags, params->paramSize, params->what, component_func(params->what));
+-- 
+2.7.0
+

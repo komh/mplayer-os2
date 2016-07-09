@@ -1,0 +1,132 @@
+From 033e62f3a8db6f44abb2485cd81be73ef565a1a1 Mon Sep 17 00:00:00 2001
+From: KO Myung-Hun <komh@chollian.net>
+Date: Mon, 29 Sep 2014 15:41:13 +0900
+Subject: [PATCH 5/5] dvdnav: fix a white-box button problem on dvdnav menu
+
+A white-box is displayed on dvdnav menu instead of the button provided
+by dvd.
+---
+ command.c              | 15 +++++++++++++++
+ libmpdemux/demux_mpg.c |  2 +-
+ mplayer.c              | 37 ++++++++++++++++++++++++++++++++++++-
+ 3 files changed, 52 insertions(+), 2 deletions(-)
+
+diff --git a/command.c b/command.c
+index 0e5c11f..f3405a2 100644
+--- a/command.c
++++ b/command.c
+@@ -1519,14 +1519,29 @@ static int mp_property_sub(m_option_t *prop, int action, void *arg,
+             *(int *) arg = -1;
+         else if (*(int *) arg >= global_sub_size)
+             *(int *) arg = global_sub_size - 1;
++        // already done ?
++        if (mpctx->global_sub_pos == *(int *) arg)
++            return M_PROPERTY_OK;
+         mpctx->global_sub_pos = *(int *) arg;
+         break;
+     case M_PROPERTY_STEP_UP:
++#ifdef CONFIG_DVDNAV
++        // disable subtitle cycling in a dvdnav menu
++        if (IS_STREAMTYPE(DVDNAV)
++            && mp_dvdnav_number_of_subs(mpctx->stream) == 0)
++            return M_PROPERTY_UNAVAILABLE;
++#endif
+         mpctx->global_sub_pos += 2;
+         mpctx->global_sub_pos =
+             (mpctx->global_sub_pos % (global_sub_size + 1)) - 1;
+         break;
+     case M_PROPERTY_STEP_DOWN:
++#ifdef CONFIG_DVDNAV
++        // disable subtitle cycling in a dvdnav menu
++        if (IS_STREAMTYPE(DVDNAV)
++            && mp_dvdnav_number_of_subs(mpctx->stream) == 0)
++            return M_PROPERTY_UNAVAILABLE;
++#endif
+         mpctx->global_sub_pos += global_sub_size + 1;
+         mpctx->global_sub_pos =
+             (mpctx->global_sub_pos % (global_sub_size + 1)) - 1;
+diff --git a/libmpdemux/demux_mpg.c b/libmpdemux/demux_mpg.c
+index a9a967e..2a13404 100644
+--- a/libmpdemux/demux_mpg.c
++++ b/libmpdemux/demux_mpg.c
+@@ -494,7 +494,7 @@ static int demux_mpg_read_packet(demuxer_t *demux,int id){
+ 
+         if(demux->sub->id > -1)
+           demux->sub->id &= 0x1F;
+-        if(!dvdsub_lang && demux->sub->id == -1)
++        if(demux->sub->id == -1)
+           demux->sub->id = aid;
+         if(demux->sub->id==aid){
+             ds=demux->sub;
+diff --git a/mplayer.c b/mplayer.c
+index b0d1f1f..de35745 100644
+--- a/mplayer.c
++++ b/mplayer.c
+@@ -1949,14 +1949,32 @@ static void mp_dvdnav_reset_stream(MPContext *ctx)
+     ctx->delay   = -audio_delay;
+     audio_delay = 0.0f;
+     mpctx->sub_counts[SUB_SOURCE_DEMUX] = mp_dvdnav_number_of_subs(mpctx->stream);
++
++    int is_menu = mpctx->sub_counts[SUB_SOURCE_DEMUX] == 0;
++    int saved_dvdsub_id = dvdsub_id;    // save current dvdsub_id
++
++    // menu ?
++    if (is_menu)
++        dvdsub_id = 0;  // use id 0 unconditionally if menu
++    else
+     if (dvdsub_lang && dvdsub_id == dvdsub_lang_id) {
+         dvdsub_lang_id = mp_dvdnav_sid_from_lang(ctx->stream, dvdsub_lang);
+         if (dvdsub_lang_id != dvdsub_id) {
+             dvdsub_id = dvdsub_lang_id;
+-            select_subtitle(ctx);
+         }
+     }
+ 
++    if (dvdsub_id >= -1)
++        select_subtitle(ctx);
++    else if (dvdsub_id == -2) {
++        int id = dvdsub_id;
++        mp_property_do("sub_demux", M_PROPERTY_SET, &id, mpctx);
++    }
++
++    // menu ?
++    if (is_menu)
++        dvdsub_id = saved_dvdsub_id;    // restore to the saved dvdsub_id
++
+     // clear all EOF related flags
+     ctx->d_video->eof = ctx->d_audio->eof = ctx->stream->eof = 0;
+ }
+@@ -3377,6 +3395,16 @@ goto_enable_cache:
+ //============ Open DEMUXERS --- DETECT file type =======================
+     current_module = "demux_open";
+ 
++#ifdef CONFIG_DVDNAV
++    // save dvdsub_id for dvdnav menu
++    int saved_dvdsub_id = dvdsub_id;
++
++    // set dvdsub_id to 0 to display an correct image in a dvdnav menu
++    // regardless of -sid and -nosub
++    if (mpctx->stream->type ==  STREAMTYPE_DVDNAV)
++        dvdsub_id = 0;
++#endif
++
+     mpctx->demuxer = demux_open(mpctx->stream, mpctx->file_format, audio_id, video_id, dvdsub_id, filename);
+ 
+     // HACK to get MOV Reference Files working
+@@ -3600,6 +3628,13 @@ goto_enable_cache:
+         }
+     }
+ 
++#ifdef CONFIG_DVDNAV
++    // restore dvdsub_id for dvdnav to play
++    if (mpctx->stream->type == STREAMTYPE_DVDNAV) {
++        dvdsub_id = saved_dvdsub_id;
++    }
++#endif
++
+     print_file_properties(mpctx, filename);
+ 
+     // Adjust EDL positions with start_pts
+-- 
+2.7.0
+

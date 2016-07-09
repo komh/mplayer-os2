@@ -1,0 +1,24 @@
+From f87d6b4ffd1d2fc76ac1baf0b4e25759d149a46a Mon Sep 17 00:00:00 2001
+From: KO Myung-Hun <komh@chollian.net>
+Date: Mon, 29 Sep 2014 14:49:51 +0900
+Subject: [PATCH 1/5] my: version.sh: use git commit count as well
+
+---
+ version.sh | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/version.sh b/version.sh
+index 0d03da2..2076c02 100755
+--- a/version.sh
++++ b/version.sh
+@@ -12,6 +12,7 @@ svn_revision=$(cat snapshot_version 2> /dev/null)
+ test $svn_revision || svn_revision=$(LC_ALL=C svn info 2> /dev/null | grep Revision | cut -d' ' -f2)
+ test $svn_revision || svn_revision=$(grep revision .svn/entries 2>/dev/null | cut -d '"' -f2)
+ test $svn_revision || svn_revision=$(sed -n -e '/^dir$/{n;p;q;}' .svn/entries 2>/dev/null)
++test $svn_revision || svn_revision=$(git rev-list origin --count)
+ test $svn_revision && svn_revision=SVN-r$svn_revision
+ test $svn_revision || svn_revision=UNKNOWN
+ version=$svn_revision
+-- 
+2.7.0
+

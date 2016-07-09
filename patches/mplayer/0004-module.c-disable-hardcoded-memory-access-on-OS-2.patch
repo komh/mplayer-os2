@@ -1,0 +1,32 @@
+From 37b1d205fed31401b625d6a63d06390ca7444878 Mon Sep 17 00:00:00 2001
+From: KO Myung-Hun <komh@chollian.net>
+Date: Mon, 29 Sep 2014 15:40:05 +0900
+Subject: [PATCH 4/5] module.c: disable hardcoded memory access on OS/2
+
+---
+ loader/module.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/loader/module.c b/loader/module.c
+index ca022c4..8af19b3 100644
+--- a/loader/module.c
++++ b/loader/module.c
+@@ -794,6 +794,7 @@ static int report_func(void *stack_base, int stack_size, reg386_t *reg, uint32_t
+   int plen=-1;
+   // find the code:
+ 
++#ifndef __OS2__
+   dptr=0x62b67ae0;dptr+=2*((reg->eax>>16)&255);
+ //  printf("FUNC: flag=%d ptr=%p\n",dptr[0],dptr[1]);
+   if(dptr[0]&255){
+@@ -828,6 +829,7 @@ static int report_func(void *stack_base, int stack_size, reg386_t *reg, uint32_t
+ 	  pwrapper=dptr[1];
+       }
+   }
++#endif
+ 
+   for(i=0;qt_fv_list[i].name;i++){
+           if(qt_fv_list[i].id==reg->eax){
+-- 
+2.7.0
+

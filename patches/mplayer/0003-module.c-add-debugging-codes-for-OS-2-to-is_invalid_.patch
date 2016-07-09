@@ -1,0 +1,45 @@
+From bdeb0405259f55423d34bc2b2ac098b7c662c8f4 Mon Sep 17 00:00:00 2001
+From: KO Myung-Hun <komh@chollian.net>
+Date: Mon, 29 Sep 2014 15:36:48 +0900
+Subject: [PATCH 3/5] module.c: add debugging codes for OS/2 to
+ is_invalid_ptr_handle()
+
+---
+ loader/module.c | 21 +++++++++++++++++++++
+ 1 file changed, 21 insertions(+)
+
+diff --git a/loader/module.c b/loader/module.c
+index 0dde75a..ca022c4 100644
+--- a/loader/module.c
++++ b/loader/module.c
+@@ -747,6 +747,27 @@ static int is_invalid_ptr_handle(void *p)
+     if(DosQueryMem(p, &cb, &fl))
+         return 1;
+ 
++#ifdef DEBUG_QTX_API
++    printf("addr = %p, cb = %d, fl = %08X : ", p, cb, fl);
++    if(fl & 0x10)
++        printf("COMMIT ");
++    if(fl & 0x2000 )
++        printf("SHARED ");
++    if(fl & 0x4000)
++        printf("FREE ");
++    if(fl & 0x10000)
++        printf("BASE ");
++    if(fl & 0x01)
++        printf("READ ");
++    if(fl & 0x02)
++        printf("WRITE ");
++    if(fl & 0x04)
++        printf("EXEC ");
++    if(fl & 0x08)
++        printf("GUARD ");
++    printf("\n");
++#endif
++
+     // Occasionally, ptr with 'EXEC' attr is passed.
+     // On OS/2, however, malloc() never sets 'EXEC' attr.
+     // So ptr with 'EXEC' attr is invalid.
+-- 
+2.7.0
+
