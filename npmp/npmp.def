@@ -1,0 +1,11 @@
+LIBRARY   NPMP  INITINSTANCE TERMINSTANCE
+PROTMODE
+CODE      MOVEABLE DISCARDABLE LOADONCALL
+DATA      MULTIPLE NONSHARED READWRITE LOADONCALL
+
+EXPORTS
+        NP_GetEntryPoints   @1
+        NP_Initialize       @2
+        NP_Shutdown         @3
+        _DLL_InitTerm       @4
+

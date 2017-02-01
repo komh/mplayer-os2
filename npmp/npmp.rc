@@ -1,0 +1,21 @@
+#include "npapi.h"
+#include "npmp.h"
+
+RCDATA NP_INFO_ProductVersion   { 1,0,0,1,}
+RCDATA NP_INFO_MIMEType         { "audio/mpeg|audio/x-mpeg|video/mpeg|video/x-mpeg|video/mpeg-system|video/x-mpeg-system|video/mp4|audio/mp4|application/mpeg4-iod|application/mpeg4-muxcodetable|video/x-msvideo|video/quicktime|application/x-ogg|application/ogg|video/x-ms-asf-plugin|video/x-ms-asf|application/x-mplayer2|video/x-ms-wmv|audio/wav|audio/x-wav|audio/3gpp|video/3gpp|audio/3gpp2|video/3gpp2|video/divx|video/flv|video/x-flv|video/x-matroska|audio/x-matroska|application/xspf+xml|audio/x-m4a|audio/x-mpegurl|audio/x-ms-wma" }
+RCDATA NP_INFO_FileExtents      { "mp2,mp3,mpga,mpega|mp2,mp3,mpga,mpega|mpg,mpeg,mpe|mpg,mpeg,mpe|mpg,mpeg,vob|mpg,mpeg,vob|mp4,mpg4|mp4,mpg4|mp4,mpg4|mp4,mpg4|avi|mov,qt|ogg|ogg|asf,asx|asf,asx||wmv|wav|wav|3gp,3gpp|3gp,3gpp|3g2,3gpp2|3g2,3gpp2|divx|flv|flv|mkv|mka|xspf|m4a|m3u|wma" }
+RCDATA NP_INFO_FileOpenName     { "MPEG audio|MPEG audio|MPEG video|MPEG video|MPEG video|MPEG video|MPEG-4 video|MPEG-4 audio|MPEG-4 video|MPEG-4 video|AVI video|QuickTime video|Ogg stream|Ogg stream|Windows Media video|Windows Media video|Windows Media plug-in|Windows Media video|WAV audio|WAV audio|3GPP audio|3GPP video|3GPP2 audio|3GPP2 video|DivX video|FLV video|FLV video|Matroska video|Matroska audio|Playlist xspf|MPEG-4 audio|Playlist M3U|Windows Media Audio" }
+RCDATA NP_INFO_FileDescription  { "Netscape Navigator Plug-in for MPlayer for OS/2" }
+RCDATA NP_INFO_ProductName      { "MPlayer for OS/2" }
+
+MENU ID_POPUP
+BEGIN
+    MENUITEM "~Full", IDM_FULL
+    MENUITEM SEPARATOR
+    MENUITEM "~Pause", IDM_PAUSE
+    MENUITEM "~Stop", IDM_STOP
+    MENUITEM SEPARATOR
+    MENUITEM "Pre~v", IDM_PREV
+    MENUITEM "~Next", IDM_NEXT
+END
+
