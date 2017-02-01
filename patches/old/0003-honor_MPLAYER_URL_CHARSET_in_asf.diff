@@ -1,0 +1,59 @@
+Index: stream/asf_mmst_streaming.c
+===================================================================
+--- stream/asf_mmst_streaming.c	(revision 37241)
++++ stream/asf_mmst_streaming.c	(working copy)
+@@ -69,6 +69,10 @@
+ 
+ } command_t;
+ 
++#ifdef CONFIG_ICONV
++char *mp_url_charset = NULL;
++#endif
++
+ static int seq_num;
+ static int num_stream_ids;
+ static int stream_ids[MAX_STREAMS];
+@@ -563,7 +567,15 @@
+ 
+   /* prepare for the url encoding conversion */
+ #ifdef CONFIG_ICONV
+-  url_conv = iconv_open("UTF-16LE", "UTF-8");
++  /* honor command line option first */
++  if (!mp_url_charset)
++    mp_url_charset = getenv("MPLAYER_URL_CHARSET");
++
++  /* if not set, default is UTF-8 */
++  if (!mp_url_charset)
++    mp_url_charset = "UTF-8";
++
++  url_conv = iconv_open("UTF-16LE", mp_url_charset);
+ #endif
+ 
+   snprintf (str, 1023, "\034\003NSPlayer/7.0.0.1956; {33715801-BAB3-9D85-24E9-03B90328270A}; Host: %s", url1->hostname);
+Index: DOCS/man/en/mplayer.1
+===================================================================
+--- DOCS/man/en/mplayer.1	(revision 37241)
++++ DOCS/man/en/mplayer.1	(working copy)
+@@ -896,6 +896,10 @@
+ May be dangerous if playing from untrusted media.
+ .
+ .TP
++.B \-urlcharset <charset>
++Specify a charset for URL (default: UTF-8).
++.
++.TP
+ .B "\-v\ \ \ \ \ "
+ Increment verbosity level, one level for each \-v
+ found on the command line.
+@@ -11928,6 +11932,10 @@
+ A value of "noconv" means no conversion.
+ .
+ .TP
++.B MPLAYER_URL_CHARSET (also see \-urlcharset)
++Charset for URL (default: UTF-8).
++.
++.TP
+ .B MPLAYER_HOME
+ Directory where MPlayer looks for user settings.
+ .
+

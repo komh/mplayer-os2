@@ -1,0 +1,162 @@
+Index: libao2/ao_dart.c
+===================================================================
+--- libao2/ao_dart.c	(revision 37241)
++++ libao2/ao_dart.c	(working copy)
+@@ -18,6 +18,29 @@
+  * You should have received a copy of the GNU General Public License along
+  * with MPlayer; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Changes :
++ *     KO Myung-Hun <komh@chollian.net> 2007/07/08
++ *         - Call fast_memcpy instead of memcpy()
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/10/21
++ *         - Changed the type of 'fNoShare' from BOOL to int
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/03/30
++ *         - Changed to support callback data interface
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/10/12
++ *         - Fixed help message from 'kva:noshare' to 'dart:noshare'.
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/10/12
++ *         - Added 'bufsize' option.
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/11/17
++ *         - Masked off all floating-point exceptions
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2009/02/17
++ *         - Use ring-buffer codes from ao_sdl.c
++ *         - Use 'share' instead of 'noshare' as option
+  */
+ 
+ #define INCL_DOS
+Index: libvo/vo_kva.c
+===================================================================
+--- libvo/vo_kva.c	(revision 37241)
++++ libvo/vo_kva.c	(working copy)
+@@ -18,6 +18,100 @@
+  * You should have received a copy of the GNU General Public License along
+  * with MPlayer; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Changes :
++ *     KO Myung-Hun <komh@chollian.net> 2007/06/11
++ *         - Added workaround for T23 laptop with S3 Video
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/06/17
++ *         - Implemented VOCTRL_SET_EQUALIZER and VOCTRL_GET_EQUALIZER
++ *         - Added YV12 as a supported image format
++ *         - Added process VK_ENTER and VK_NEWLINE
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/07/08
++ *         - Call fast_memcpy() instead of memcpy()
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/09/27
++ *         - Added morphToPM()
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/09/30
++ *         - Support prescaled aspect ratio
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/10/21
++ *         - Some clean-ups to use vo_xxx vars. instead of internal vars.
++ *         - Changed the type of 'fUseDive' and 'fFixT23' from BOOL to int
++ *         - Implemented VOCTRL_UPDATE_SCREENINFO
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/11/24
++ *         - Outside of image is filled with black color
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/12/23
++ *         - Added support of SNAP
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2007/12/30
++ *         - Fixed the crash when movie size is larger than max size
++ *           supported by SNAP
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/11
++ *         - Use the scale options from cmd line
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/16
++ *         - Fixed the diagonal stripe when using YUY2 image format with SNAP
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/17
++ *         - Added support of YV12 and YVU9
++ *         - Use SwScaler if there is no hardware accerleration.
++ *           This is faster than using '-vf' scaling, becuase of reducing
++ *           overhead of copying image data.
++ *         - Use m_int variables in imgCreate(), imgFree() and imgDisplay()
++ *           instead of using parameters.
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/24
++ *         - Implemented VOCTRL_DRAW_IMAGE
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/26
++ *         - Support 'Keypad Enter'
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/31
++ *         - Support 'WinID'
++ *         - Support 'vo_keepaspect'
++ *         - Preserve window position and size when switching to full screen
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/02/25
++ *         - Maintain 'vo_fs' flag even though config() is called many times
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/08/31
++ *         - Support 'Keypad' keys.
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/10/18
++ *         - On slave mode, change a movie window size according to a parent
++ *           window size.
++ *         - On slave mode, do not set the focus to a movie window by mouse
++ *           events.
++ *         - On slave mode, deliver mouse events to a parent window
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/10/18
++ *         - Disable screen saver on preinit, and enable it again on uninit
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/11/17
++ *         - Masked off all floating-point exceptions
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2009/02/27
++ *         - Enable 2x2 dithering on DIVE mode.
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2009/03/08
++ *         - Use setAspectRatio() inline function instead of SET_ASPECT_RATIO
++ *           macro.
++ *         - Added nChromaShift to m_int.
++ *         - Use lookup_keymap_table() to match PM keys to MPlayer ones.
++ *         - Use mem2agpcpy_pic() instead of fast_memcpy() in put_image().
++ *         - Now draw_frame() just return VO_ERROR, because draw_image() does
++ *           all actually.
++ *         - Introduced query_format_info().
++ *         - draw_slice() supports RGB/BGR videos.
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2010/11/01
++ *         - Restore attributes after changing aspect ratio.
+  */
+ 
+ #define INCL_WIN
+Index: osdep/getch2-os2.c
+===================================================================
+--- osdep/getch2-os2.c	(revision 37241)
++++ osdep/getch2-os2.c	(working copy)
+@@ -18,6 +18,17 @@
+  * You should have received a copy of the GNU General Public License along
+  * with MPlayer; if not, write to the Free Software Foundation, Inc.,
+  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ *
++ * Changes :
++ *     KO Myung-Hun <komh@chollian.net> 2007/10/28
++ *         - Support new type getch2()
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2008/01/26
++ *         - Support 'Keypad Enter'
++ *
++ *     KO Myung-Hun <komh@chollian.net> 2009/05/19
++ *         - Malloc for charset to fix that 'charset' changes in according to
++ *           setlocale() because nl_langinfo() returns static variable.
+  */
+ 
+ #define INCL_KBD
+

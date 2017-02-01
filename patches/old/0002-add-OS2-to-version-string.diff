@@ -1,0 +1,14 @@
+Index: Makefile
+===================================================================
+--- Makefile	(revision 37241)
++++ Makefile	(working copy)
+@@ -807,7 +807,7 @@
+ 
+ # rebuild version.h each time the working copy is updated
+ version.h: version.sh $(wildcard .svn/entries .git/logs/HEAD)
+-	./$< `$(CC) -dumpversion`
++	./$< OS2-`$(CC) -dumpversion`
+ 
+ %$(EXESUF): %.c
+ 	$(CC) $(CC_DEPFLAGS) $(CFLAGS) -o $@ $^ $(LIBS)
+
