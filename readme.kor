@@ -1,0 +1,472 @@
+                               MPlayer for OS/2
+                              ------------------
+                         
+1. 소개
+-------
+
+  이 프로그램은 MPlayer 를 OS/2 로 포팅한 것입니다.
+  
+2. 특징
+-------
+  
+  .SNAP/WarpOverlay!/VMAN/DIVE 지원
+  .UNIAUD/DART 지원
+                             
+3. 실행에 필요한 것들...
+------------------------
+  
+  .kLIBC v0.6.6
+ 
+4. 비디오/오디오 드라이버 설정
+------------------------------
+
+4.1 비디오 드라이버 설정
+------------------------
+
+  다음 선택사항을 추가하십시오.
+  
+    -vo kva
+    
+  또는 비디오 드라이버를 아무것도 설정하지 않으면, SNAP -> WarpOverlay! -> 
+VMAN -> DIVE 순으로 자동선택됩니다. 특정 모드를 지정하려면 다음처럼 하십시오.
+
+    -vo kva:mode
+    
+  여기에서 mode 에는 snap, wo, vman, dive 를 쓸 수 있습니다. 예를 들어 DIVE
+모드를 지정한다면,
+
+    -vo kva:dive
+    
+처럼 하시면 됩니다.    
+   
+  T23 의 S3 비디오카드 같이 이미지 축소 기능이 없는 카드를 사용하는 경우 t23 
+선택사항을 추가해 주십시오
+
+    -vo kva:t23
+    
+4.2 오디오 드라이버 설정
+------------------------
+
+  다음 선택사항을 추가하십시오.
+
+    -ao kai
+    
+  또는 오디오 드라이버를 아무것도 설정하지 않으면, UNIAUD -> DART 순으로 
+자동선택됩니다. 특정 모드를 지정하려면 다음처럼 하십시오.
+
+    -ao kai:mode
+    
+  여기에서 mode 에는 uniaud, dart 를 쓸 수 있습니다. 예를 들어 dart 모드를 
+지정한다면,
+
+    -ao kai:dart
+    
+처럼 하시면 됩니다.        
+    
+  오디오를 독점 모드로 사용하려면 다음처럼 하십시오.
+  
+    -ao kai:noshare
+    
+  오디오 버퍼의 크기를 지정하려면 다음처럼 하십시오.
+  
+    -ao kai:bufsize=size
+    
+  size 는 샘플 단위입니다. 기본값은 2048 입니다.
+
+5. 환경 변수들...
+-----------------
+
+5.1 MPLAYER_HOME 환경 변수
+--------------------------
+
+  MPlayer 설정 파일이 있는 디렉토리를 지정합니다. 이 환경 변수가 지정되지
+않으면 'HOME' 환경 변수가 지정하는 디렉토리의 '.mplayer' 디렉토리로
+지정됩니다. 만일 'HOME' 환경 변수도 지정되지 않았다면 MPlayer 가 설치되어 있는
+디렉토리의 '.mplayer' 디렉토리로 지정됩니다.
+
+  예) SET MPLAYER_HOME=x:\mplayer
+
+5.2 MPLAYER_OPTIONS 환경 변수
+-----------------------------
+
+  !!! 더 이상 지원되지 않습니다. 설정 파일을 쓰시기 바랍니다. !!!
+  
+  설정 파일은 'MPLAYER_HOME' 환경 변수가 지정하는 디렉토리에 있는 'config' 
+입니다. 다음은 사용예입니다.
+
+    # Write your default config options here!
+    quiet=yes
+    vo=kva:dive
+
+이것은 다음과 같은 효과를 나타냅니다.
+
+    MPLAYER -quiet -vo kva:dive
+      
+5.3 MPLAYER_CODECS_DIR 환경 변수
+--------------------------------
+
+  !!! 더 이상 지원되지 않습니다. -codecpath 설정사항을 쓰시기 바랍니다. !!!
+  
+  Win32 용 바이너리 코덱이 있는 디렉토리를 지정합니다. 
+
+  예) mplayer -codecpath x:\mplayer\codecs
+  
+5.4 MPLAYER_PATH
+----------------
+
+  MPlayer 의 완전한 경로를 지정합니다. 이 환경 변수는 모질라용 플러그인을 위한 
+것입니다. 이 환경 변수가 지정되지 않으면 'PATH' 환경 변수에서 MPlayer 를 
+찾습니다.
+
+  예) SET MPLAYER_PATH=x:\mplayer\mplayer.exe
+
+6. 슬레이브 모드
+----------------
+  
+  MPlayer 는 다른 프로그램의 backend 로서 작동할 수 있는 기능을 가지고 
+있습니다. 바로 슬레이브 모드입니다. 이 모드에서는 '이름있는 파이프' 를 통해 
+외부 프로그램과 MPLAYER 가 통신할 수 있습니다. 이 때, 파이프의 이름은 다음의 
+형식을 따라야 합니다.
+
+    \PIPE\MPLAYER\pid
+      
+  여기서 pid 는 MPlayer 의 프로세스 ID 입니다. 
+  
+  자세한 것은 소스 패키지에 포함되어 있는 slave.c 를 참조하시기 바랍니다.
+  
+  슬레이브 명령에 대해서는 DOCS\tech 디렉토리에 있는 slave.txt 문서를 
+참조하시기 바랍니다.
+
+7. Win32 바이너리 코덱 사용하기
+-------------------------------
+
+  MPlayer 는 Win32 바이너리 코덱을 지원합니다. 
+  
+  이 기능을 쓰기 위해서는, Win32 바이너리 코덱이 필요합니다. 다음에서 받을 수 
+있습니다.
+
+    http://www.mplayerhq.hu/design7/dload.html
+    
+  받은 코덱 묶음에 들어있는 파일들을, -codecpath 가 가리키는 디렉토리에 풀기 
+바랍니다.
+
+8. 모질라용 플러그인
+--------------------
+
+  아주 간단한 형태의 플러그인이 제공됩니다. 패키지에 있는 npmp.dll 을 모질라 
+플러그인 디렉토리에 복사하면 됩니다.
+
+  MPlayer 에서 사용하는 글쇠를 그대로 사용할 수 있고, 오른쪽 버튼을 누르면 
+팝업 메뉴가 나타납니다.
+
+9. DVD 재생하기
+---------------
+
+9.1 DVD 드라이브 설정하기
+-------------------------
+
+  DVD 드라이브를 설정하려면 다음 선택사항을 사용하십시오.
+  
+    -dvd-device x:
+    
+9.2 메뉴없이 DVD 재생하기
+-------------------------
+
+  메뉴없이 DVD 를 재생하려면 다음 선택사항을 사용하십시오.
+  
+    dvd://[트랙번호]
+    
+  [트랙번호]는 생략가능합니다.
+  
+9.3 메뉴로 DVD 재생하기
+-----------------------
+
+  메뉴를 통해 DVD 를 재생하려면 다음 선택사항을 사용하십시오.
+  
+    dvdnav://
+    
+9.3.1 DVD 메뉴 화면에서 쓰이는 사용 글쇠
+----------------------------------------
+
+  키패드 커서 글쇠 : 메뉴 선택
+  키패드 엔터 글쇠 : 메뉴 실행
+    
+9.4 음성 및 자막 바꾸기
+-----------------------
+
+  '#' : 음성 채널 바꾸기
+  'j' : 자막 채널 바꾸기
+  
+9.5 지역 코드 설정하기
+----------------------
+
+  일부 DVD 드라이브는 RPC Phase II 를 사용합니다. 이 경우에 지역 코드가 다르면 
+DVD 가 재생이 되지 않습니다. DVD 재생이 되지 않을 경우, 다음 프로그램을 
+이용하여 RPC Phase 를 확인하시고, 지역 코드를 설정하시기 바랍니다. 
+
+    http://www.os2site.com/sw/mmedia/video/regionset.zip  
+
+10. 프론트 엔드
+---------------
+
+  MPlayer 를 보다 쉽게 쓰기 위한 프론트 엔드로 SMPlayer 가 있습니다.
+  
+  다음에서 받을 수 있습니다.
+  
+    ftp://ftp.netlabs.org/pub/smplayer
+    
+11. 제한 사항 또는 알려진 벌레들...
+-----------------------------------
+  
+  .플러그인의 경우, VMAN/DIVE 모드일 때 스크롤하면 잔상이 남습니다. 최신판 
+   모질라를 사용하시기 바랍니다
+
+  .UNIAUD 드라이버를 사용할 경우, 특히 탐색할 때, 오디오 재생에 문제가 있을 수
+   있습니다. 다음 드라이버를 사용해보시기 바랍니다
+     
+     https://www.os2.kr/komh/testcase/uniaud_test.zip
+
+  .혜성 커서 기능을 켠 상태에서 VMAN/DIVE 모드로 재생을 하면, 마우스를 움직일 
+   때마다 시스템이 일시적으로 멈춥니다. 둘 중에 하나만 사용하시기 바랍니다
+ 
+12. 할 것들...
+--------------
+  
+  .현재 없음
+  
+13. OS/2 관련 판보기
+---------------------
+
+  - v1.5-9.1.0 ( 2023/03/05 )
+    .MPlayer/MEncoder : v1.5 공식 소스 사요
+    
+  - v1.4-9.1.0 ( 2019/05/06 )
+    .MPlayer/MEncoder : v1.4 공식 소스 사요
+
+  - v1.3.0-4.9.2 ( 2016/02/18 )
+    .MPlayer/MEncoder : v1.3.0 공식 소스 사용
+
+  - v1.2.1-4.9.2 ( 2016/01/25 )
+    .MPlayer/MEncoder : v1.2.1 공식 소스 사용
+    .MPlayer : 오디오 볼륨 조절 개선( libkai 1.2.0 사용 )
+
+  - v1.2.0-4.9.2 ( 2015/10/04 )
+    .MPlayer/MEncoder : v1.2 공식 소스 사용
+    .MPlayer : https 프로토콜 지원( gnutls v3.3.9 사용 )
+    
+  - v1.1.1-4.4.6 ( 2013/06/25 )
+    .MPlayer/MEncoder : v1.1.1 공식 소스 사용
+    .MPlayer/MEncoder : 파일 이름이 너무 길면 프로그램 충돌. 고침
+                        ( Peter Brown 씨 제보 )
+    .MPlayer/MEncoder : 판번호 문자열에서 OS2 삭제
+    
+  - v1.1-OS2-4.4.6 ( 2012/06/10 )
+    .MPlayer/MEncoder : v1.1 공식 소스 사용
+    
+  - SVN-r34646-OS2-4.4.6 ( 2012/02/03 )
+    .MPlayer  : VMAN 모드 지원 ( libkva v1.2.0 사용 )
+    .MPlayer  : VMAN/DIVE 모드에서 BGR4 색공간 지원 ( libkva v1.2.0 사용 )
+    .MEncoder : WebM 지원 ( libvpx v1.0.0 사용 )
+    .MPlayer  : SNAP 드라이버를 쓰지 않을 때, SDDHELP$ 때문에 비정상적 종료. 
+                고침 ( libkva v1.2.0 사용 )
+    
+  - SVN-r33491-OS2-4.4.5 ( 2011/05/29 )
+    .MPlayer : live555 스트리밍 지원 
+    .MPlayer : WMV9DMO 코덱이 쓰이면 멈춤. 고침( 최신판 pthread 사용 )
+    
+  - SVN-r32813-OS2-4.4.5 ( 2011/02/06 )
+    .MPlayer : DVD 디렉토리 재생 지원
+    .MPlayer : 전체 화면과 창 화면 사이를 전환하면 화면 속성 사라짐. 고침
+
+  - SVN-r30994-OS2-4.4.2 ( 2010/04/04 )
+    .MPlayer/MEncoder : 공식 소스에 OS/2 관련 패치 모두 적용
+    .MPlayer/MEncoder : MPLAYER_CODECS_DIR 대신 -codecpath 도입 
+    .MPlayer : LIBPATHSTRICT 호환성 개선( 실험중 )
+    
+  - SVN-r30272-OS2-4.4.2-r2 ( 2010/01/14 )
+    .MPlayer : SSA/ASS 지원 빠짐. 고침( FreeType 2.3.11 사용 )
+
+  - SVN-r30272-OS2-4.4.2 ( 2010/01/13 )
+    .MPlayer : 오디오 드라이버를 dart 에서 kai로 바꿈( UNIAUD 지원 )
+  
+  - dev-SVN-r29359-OS2-4.4.0 ( 2009/06/14 )
+    .MPlayer/MEncoder : SSSE3 명령어셋 지원( binutils v2.19.1 사용 )
+    .MPlayer : cdda:// 지원
+    .MPlayer : cddb:// 지원
+    .MPlayer : vcd:// 지원
+    .MPlayer : DIVE 모드에서 2x2 디더링 사용
+    .MPlayer : 재생하는 동안 Doodle's Screen Saver 를 끔
+    .MPlayer : dvdcss, dvdread, dvdnav 내부판으로 바꿈
+    .MPlayer : rxqueue 에 파이프로 연결하여 재생할 때, SIGPIPE 발생. 고침.
+    .MPlayer : 때때로 SIGFPE 발생. 고침.
+    .MPlayer : stdin/stdout 을 파이프로 연결하여 재생할 때 영상이 깨짐. 고침. 
+               ( Lech Wiktor Piotrowski 씨 제보 )
+    
+  - dev-SVN-r27724-OS2-4.3.2 ( 2008/10/24 )
+    .MPlayer/MEncoder : 스택 변수 정렬 지원( 컴파일러를 GCC 4.3.2 로 바꿈 ).
+    .MPlayer : libdvdnav 지원
+    .MPlayer/MEncoder : -priority 지원
+    .MPlayer : 오디오 버퍼 크기 설정 지원
+    .MPlayer : config() 가 여러번 호출되더라도 전체화면 상태 유지
+    .MEncoder : x264 라이브러리 지원
+    .MEncoder : faac 라이브러리 지원
+    .슬레이브 모드 : 부모 창의 크기가 바뀌면 MPlayer 창 크기도 바꿈
+    .슬레이브 모드 : 마우스 버튼을 누르더라도 입력 초점을 바꾸지 않음
+    .슬레이브 모드 : 마우스 입력을 부모 창에 전달
+    .플러그인 : 플레이 리스트 파일 지원
+    .플러그인 : 간단한 상태 메세지 출력
+    .플러그인 : 간단한 인터페이스 지원
+    .플러그인 : 간단한 팝업 메뉴 지원
+    .플러그인 : 플러그인 창의 크기를 바꾸어 전체 화면 지원
+    
+  - dev-SVN-r26012-OS2-3.3.5 ( 2008/02/17 )
+    .모질라용 플러그인 지원
+    .-wid 선택사항 지원
+    .-nokeepaspect 선택사항지원
+    .'MPLAYER_CODECS_DIR' 환경 변수 지원( Win32 바이너리 코덱용 )
+    .'MPLAYER_PATH' 환경 변수 지원( 모질라 플러그인용 )
+    .키패드에 있는 'Enter' 지원
+    .libmp3lame 3.97 사용 ( Ilya Zakharevich 씨 제안 )
+    .자동모드일 때, 하드웨어 가속 기능이 사용 중이면 DIVE 모드로 전환
+    .전화면으로 전환했을 때 창 위치 및 크기 보존
+    .SNAP 오버레이가 지원되지 않으면 처음 한 번만 실행되고 두 번째부터 
+     비정상적으로 종료. 고침. ( Tom Brown 씨 제보 )
+    .'MPLAYER_OPTIONS' 환경 변수 지원 철회
+  
+  - dev-SVN-r25844-OS2-3.3.5 ( 2008/01/24 )
+    .Win32 바이너리 코덱 지원
+    .snap 모드일 때 YV12, YVU9 가속 기능 지원
+    .VOCTRL_DRAW_IMAGE 지원 
+    .명령행의 scale 옵션 사용
+     ( 이전과 같은 결과를 얻으려면 '-sws 0' 쓸 것 )
+    .비디오 모드의 자동 선택 순서를 wo -> snap -> dive 에서 snap -> wo -> dive 
+     로 바꿈
+    .snap 모드일 때, YUY2 동영상을 재생하면 대각선 줄무늬가 나타남. 고침.
+    .snap 모드일 때, 16M 색상 모드가 아니면 동영상이 안 나타남. 고침.
+    .snap 모드일 때, 가속 지원 크기보다 큰 동영상을 재생하면 비정상적으로 
+     끝남. 고침.
+    .snap 모드일 때, 창을 최소화했다가 복원하면 설정한 속성이 사라짐. 고침.
+    .SSE 탐지 안됨. 고침( Andreas Ludwig 씨 제보 ).
+    
+  - dev-SVN-r25520-OS2-3.3.5 ( 2007/12/29 )
+    .SNAP 오버레이 지원( snapwrap.dll 필요, Mike Forester 씨께 감사 )
+    .XviD 라이브러리 사용
+    .Colorkey 에 상관없이 동영상 주변을 검게 표시
+    .배포판에 MEncoder.exe 포함( Ilya Zakharevich 씨 제안 )
+    
+  - dev-SVN-r24878-OS2-3.3.5 Refreshed ( 2007/11/04 )
+    .DIVE 모드일 때, 비디오가 나오지 않음. 고침( Mike Forester 씨 제보 ).
+    ( libkva 를 재컴파일하시기 바랍니다 )
+    
+  - dev-SVN-r24878-OS2-3.3.5 ( 2007/10/28 )
+    .-vf screenshot 지원
+    .와일드 카드 지원
+    .프리-스케일링 지원
+    .기본 코덱 디렉토리를 /usr/local/lib/codecs 에서 ./codecs 로 바꿈
+     ( Rainer 씨 제안 )
+    .MPOPT 환경변수를 MPLAYER_OPTIONS 로 바꿈 ( Rainer 씨 제안 )
+    .쓰레드 사용
+    .상태줄 스크롤 됨. 고침.
+    .-aspect 선택사항 지원 안됨. 고침( Mike Forester 씨 제보 )
+    .-colorkey 선택사항 지원 안됨. 고침
+     ( 단, 이전처럼 쓰기 위해서는 -colorkey 0x000008 쓸 것 )
+    
+  - dev-SVN-r23698-OS2-3.3.5 ( 2007/07/01 )
+    .'MPOPT' 환경변수 지원
+    .DART 독점 모드 지원
+    .VOCTRL_SET_EQUALIER, VOCTRL_GET_EQUALIZER 지원
+     ( 밝기/대조/채도/색상 조절 가능 )
+    .지원되는 이미지 포맷에 YV12 추가. 성능 향상
+    .콘솔 입력 지원
+    .DVD 지원
+    .슬레이브 모드 지원
+    .WO 모드일 때, 이미지 축소 기능이 없는 비디오 카드(S3)의 경우, 영상이
+     제대로 표시되지 않음. 고침( Franz Bakan 씨 제보 ).
+    .'-fs' 선택사항을 쓰면 타이틀 바가 활성화되지 않음. 고침.
+    .enable_cache() 에서 비정상적 종료. 고침( 쓰레드 스택 크기 늘림 ).
+    .init_audio_codec() 에서 비정상적 종료. 고침( 프로그램 스택 크기 늘림 ).
+
+  - dev-SVN-r23385-OS2-3.3.5 ( 2007/05/27 )
+    .캐시 기능(네트워크)을 사용하면 'Exit T1' 상태에서 프로그램이 종료되지 
+     않음. 고침.
+    
+  - 시험판 ( 2007/05/12 )
+    .DIVE/WarpOverlay!, DART 지원
+  
+14. 소스 컴파일하기
+-------------------
+
+14.1 필요한 것들...
+-------------------
+
+  .GNU 유틸리티( sh, cp, rm, mkdir, ... )
+  .GNU Make v3.81-k2
+  .GNU patch v2.5.4
+  .GCC v9.1.0
+  .binutils v2.25
+  .OS/2 ToolKit v4.5
+  .nasm v2.14.02
+  .FreeType v2.8( 선택, 자막/OSD )
+  .zlib v1.2.11( 선택, 일부 코덱 )
+  .libmad v0.15.1b( 선택, mp3 )
+  .libpng v1.6.28( 선택, 스크린샷 )
+  .pthread rpm판( 선택, 쓰레드 및 Win32 코덱 )
+  .Subversion client v1.6.16( 선택, MPlayer 최신 소스 합치기 )
+  .git v2.39.1( 선택, FFmpeg 소스 받기 )
+  .xvidcore v1.3.4( 선택, XviD 코덱 인코딩 )
+  .lame v3.100( 선택, mp3lame 인코딩 )
+  .faac v1.29.9.2( 선택, FAAC 인코딩 )
+  .x264 0.150.4482( 선택, x264 인코딩 )
+  .libkva v1.2.4( 선택, kva 비디오 출력 )
+  .libkai v2.2.0( 선택, kai 오디오 출력 )
+  .liba52 v0.7.4( 선택, a52 디코딩 )
+  .libcdio v0.81( 선택, 오디오 CD )
+  .libvpx v1.8.2( 선택, WebM 디코딩/인코딩 )
+  .gmp v6.1.2( 선택, https 지원 )
+  .nettle v3.3( 선택, https 지원 )
+  .gnutls v3.5.8( 선택, https 지원 )
+  
+14.2 컴파일 하기
+----------------
+
+  우선 MPlayer 홈페이지(http://www.mplayerhq.hu/design7/dload.html)에서 소스를 
+다운받습니다. 소스를 원하는 디렉토리에 풀고, src.zip 을 마찬가지로 해당 
+디렉토리에 풉니다. os2.diff 가 제공될 경우 다음과 같이 적용하시기 바랍니다.
+
+    patch -p0 < os2.diff 
+  
+  패치가 정상적으로 끝나면, configure.cmd 를 실행시킵니다.
+
+  성공적으로 작업이 끝났으면, 아래처럼 make 를 실행시킵니다.
+
+    make SHELL=/bin/sh
+  
+  컴파일이 끝나면 mplayer.exe 와 mencoder.exe 를 얻을 수 있습니다.
+  
+15. MPlayer 공식 홈페이지
+-------------------------
+
+  MPlayer 공식 홈페이지는 다음과 같습니다. 이 곳에서는 MPlayer 에 대한 자세한 
+자료들, 특히 설명 문서들을 얻을 수 있습니다.
+
+    http://www.mplayerhq.hu
+
+16. 후원하기
+------------
+
+  이 프로그램이 마음에 들어 후원하고 싶으시면, 아래 URL 을 방문해 주십시오.
+
+    https://www.os2.kr/komh/os2factory/
+
+  또는 다음 블로그에서 광고를 클릭해 주십시오.
+  
+    https://lvzuufx.blogspot.com/
+      
+17. 하고 싶은 말이 있을 때...
+----------------------------
+
+  github 의 이슈 트래커를 이용해 주십시오.
+
+      https://github.com/komh/mplayer-os2/issues
+
+고명훈

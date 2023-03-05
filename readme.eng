@@ -1,0 +1,477 @@
+                               MPlayer for OS/2 
+                              ------------------
+                         
+1. Introduction
+---------------
+
+  This program is the OS/2 port of MPlayer.
+  
+2. Features
+-----------
+  
+  .Supports SNAP/WarpOverlay!/VMAN/DIVE
+  .Supports UNIAUD/DART
+                             
+3. Requirements
+---------------
+  
+  .kLIBC v0.6.6
+ 
+4. Setting Video/Audio Driver
+-----------------------------
+
+4.1 Setting Video Driver
+------------------------
+
+  Add the following option.
+  
+    -vo kva
+    
+  Or, if you specify nothing, SNAP -> WarpOverlay! -> VMAN -> DIVE is 
+auto-selected. But if you want to force a specific mode, add the following 
+option.
+
+    -vo kva:mode 
+   
+  Where, mode can be 'snap', 'wo', 'vman' or 'dive'. If you want DIVE mode, do 
+the following.
+  
+    -vo kva:dive
+    
+  If you have a video card such as S3 on T23 laptop which doesn't have ability 
+to downscale, you can use 't23' option.
+
+    -vo kva:t23
+       
+4.2 Setting Audio Driver
+------------------------
+
+  Add the foloowing options.
+  
+    -ao kai
+    
+  Or, if you specify nothing, UNIAUD -> DART is auto-selected. 
+But if you want to force a specific mode, add the following option.
+
+    -ao kai:mode 
+   
+  Where, mode can be 'uniaud', 'dart'. If you want DART mode, do the 
+following.
+
+    -ao kai:dart
+  
+  If you want to open dart as an exclusive mode, do the following.
+  
+    -ao kai:noshare
+    
+  If you want to set audio buffer size, do the following.
+  
+    -ao kai:bufsize=size
+    
+  Where, size is in samples. Its default value is 2048.
+
+5. Environmental Variables...
+-----------------------------
+
+5.1 MPLAYER_HOME
+----------------
+
+  Specify the directory where configuration file exist. If this is not 
+specified, use 'HOME'. But it is '%HOME%\.mplayer'. And if this is specified 
+neither, it is the '.mplayer' directory of the directory where MPlayer is 
+installed.
+
+  ex) SET MPLAYER_HOME=x:\mplayer
+  
+5.2 MPLAYER_OPTIONS
+-------------------
+
+  !!! This is not supported any more. Instead use configuration file. !!!
+  
+  It is 'config' file in the directory where 'MPLAYER_HOME' specify. The 
+following is example.
+
+    # Write your default config options here!
+    quiet=yes
+    vo=kva:dive
+
+This is the same as the following.
+
+    MPLAYER -quiet -vo kva:dive
+      
+5.3 MPLAYER_CODECS_DIR
+----------------------
+
+  !!! This is not supported any more. Instead use '-codecpath' option. !!!
+
+  Specify the directory where Win32 binary codecs exist. 
+
+  ex) mplayer -codecpath x:\mplayer\codecs
+
+5.4 MPLAYER_PATH
+----------------
+
+  Specify the fully-qualified path of MPlayer. This is for Mozilla plugin. If 
+this is not specified, MPlayer in 'PATH' is executed.
+
+  ex) SET MPLAYER_PATH=x:\mplayer\mplayer.exe  
+
+6. Slave mode
+-------------
+
+  MPlayer has a feature to work as backend, which is slave mode. By this mode, 
+MPlayer communicate external program with a 'named pipe'. The format of named 
+pipe should be
+
+    \PIPE\MPLAYER\pid
+      
+  where, pid is process ID of MPlayer.
+  
+  For details, see 'slave.c' of source package.
+  
+  For slave commands, see 'slave.txt' in DOCS\tech directory
+  
+7. Using Win32 binary codecs
+----------------------------
+
+  MPlayer has a feature to use Win32 binary codecs.
+  
+  To use this feature, you need a Win32 binary codec package. You can get it 
+the following.
+
+    http://www.mplayerhq.hu/design7/dload.html
+    
+  Then, extract all the files to the directory specified by '-codecpath'
+  
+8. Mozilla Plugin
+-----------------
+
+  Very simple plugin is provided. Copy 'npmp.dll' in this package to Mozilla 
+plugins directory. 
+
+  You can use the same key as MPlayer, and invoke popup menu when pressing 
+right mouse button.
+
+9. How to play DVD
+------------------
+
+9.1 How to set DVD drive
+------------------------
+
+  To set DVD drive, use the following option.
+  
+    -dvd-device x:
+    
+9.2 How to play DVD without menu
+--------------------------------
+
+  To play DVD without menu, use the following option.
+  
+    dvd://[track number]
+    
+  You can omit [track number].
+  
+9.3 How to play DVD with menu
+-----------------------------
+
+  To play DVD with menu, use the following option.
+  
+    dvdnav://
+
+9.3.1 Keys for DVD menu screen
+------------------------------
+
+  Keypad cursor keys : to select menu
+  Keypad enter key   : to execute the selected menu
+    
+9.4 How to change audio and subtitle
+------------------------------------
+
+  '#' : Change audio channel
+  'j' : Change subtitle channel
+  
+9.5 Setting a Regional Code
+---------------------------
+
+  Some DVD drives use RPC Phase II. In this case, if a regional code of your 
+DVD drive is different from your DVD title, it cannot be played. If your DVD 
+title is not played, confirm RPC phase and set a regional code of your DVD 
+drive using the following program.
+
+    http://www.os2site.com/sw/mmedia/video/regionset.zip  
+
+10. Front end
+-------------
+
+  You can use 'SMPlayer' to ease use of MPlayer.
+  
+  You can get it here,
+  
+    ftp://ftp.netlabs.org/pub/smplayer
+    
+11. Limits or Known Bugs...
+---------------------------
+  
+  .In case of Mozilla plugins, Part of image is displayed outside of plugin 
+   window when scrolled on VMAN/DIVE mode. Use the latest Mozilla suite
+   
+  .UNIAUD driver may cause an audio problem, especially when seeking. Please 
+   try using the following driver
+
+     http://www.ecomstation.co.kr/komh/testcase/uniaud_test.zip
+
+  .If you use VMAN/DIVE mode while turning comet curosr feature on, system 
+   hiccups whenever moving mouse. Use only one of them
+   
+12. TODOs...
+------------
+  
+  .None
+ 
+13. History specific to OS/2
+----------------------------
+
+  - v1.5-9.1.0 ( 2023/03/05 )
+    .MPlayer/MEncoder : Use v1.5 official sources
+
+  - v1.4-9.1.0 ( 2019/05/06 )
+    .MPlayer/MEncoder : Use v1.4 official sources
+
+  - v1.3.0-4.9.2 ( 2016/02/18 )
+    .MPlayer/MEncoder : Use 1.3.0 official sources
+
+  - v1.2.1-4.9.2 ( 2016/01/25 )
+    .MPlayer/MEncoder : Use v1.2.1 official sources
+    .MPlayer : Improved audio volume control ( using libkai v1.2.0 )
+
+  - v1.2-4.9.2 ( 2015/10/04 )
+    .MPlayer/MEncoder : Use v1.2 official sources
+    .MPlayer          : Support https protocol ( using gnutls v3.3.9 )
+    
+  - v1.1.1-4.4.6 ( 2013/06/25 )
+    .MPlayer/MEncoder : Use v1.1.1 offical sources
+    .MPlayer/MEncoder : Crash if a file name is too long. Fixed
+                        ( Reported by Peter Brown )
+    .MPlayer/MEncoder : Removed 'OS2' from a version string
+
+  - v1.1-OS2-4.4.6 ( 2012/06/10 )
+    .MPlayer/MEncoder : Use v1.1 official sources
+    
+  - SVN-r34646-OS2-4.4.6 ( 2012/02/03 )
+    .MPlayer  : Support VMAN mode ( using libkva v1.2.0 )
+    .MPlayer  : Support BGR4 color space on VMAN/DIVE mode 
+                ( using libkva v1.2.0 )
+    .MEncoder : Support WebM ( using libvpx v1.0.0 )
+    .MPlayer  : Abnormally exit due to SDDHELP$ unless using SNAP driver.
+                Fixed ( using libkva v1.2.0 )
+
+  - SVN-r33491-OS2-4.4.5 ( 2011/05/29 )
+    .MPlayer : Support live555 streaming
+    .MPlayer : Hang on when WMV9DMO codec is used. Fixed( use latest pthread )
+
+  - SVN-r32813-OS2-4.4.5 ( 2011/02/06 )
+    .MPlayer : Support to play a directory of DVD
+    .MPlayer : Video attributes are lost when switching between a full screen 
+               mode and a window mode. Fixed
+
+  - SVN-r30994-OS2-4.4.2 ( 2010/04/04 )
+    .MPlayer/MEncoder : Merged all the OS/2 patches into MPlayer official 
+                        sources
+    .MPlayer/MEncoder : Introduce -codecpath instead of MPLAYER_CODECS_DIR     
+    .MPlayer : Improved LIBPATHSTRICT compatibility( experimental )
+
+  - SVN-r30272-OS2-4.4.2-r2 ( 2010/01/14 )
+    .MPlayer : Missed SSA/ASS support. Fixed ( use FreeType v2.3.11 )
+
+  - SVN-r30272-OS2-4.4.2 ( 2010/01/13 )
+    .MPlayer : Changed an audio driver from dart to kai( Support UNIAUD )
+    
+  - dev-SVN-r29359-OS2-4.4.0 ( 2009/06/14 )
+    .MPlayer/MEncoder : Support SSSE3 instruction set( use binutils v2.19.1 )
+    .MPlayer : Support cdda://
+    .MPlayer : Support cddb:// 
+    .MPlayer : Support vcd:// 
+    .MPlayer : Use 2x2 dithering on DIVE mode
+    .MPlayer : Turn off Doodle's Screen Saver while playing
+    .MPlayer : Use the internal version of dvdcss, dvdread and dvdnav
+    .MPlayer : SIGPIPE occur when pipeing to rxqueue. Fixed.
+    .MPlayer : Sometimes SIGFPE occur. Fixed.
+    .MPlayer : Movie corrupted when piping from/to stdin/stdout. Fixed. 
+               ( Report by Lech Wiktor Piotrowski )
+
+  - dev-SVN-r27724-OS2-4.3.2 ( 2008/10/24 )
+    .MPlayer/MEncoder : Support stack variables alignment
+                        ( Changed compiler to GCC 4.3.2 ).
+    .MPlayer/MEncoder : Support -priority 
+    .MPlayer : Support libdvdnav
+    .MPlayer : Support to set audio buffer size
+    .MPlayer : Maintain full screen status even though config() is called many 
+               times
+    .MEncoder : Support x264 library
+    .MEncoder : Support faac library
+    .Slave mode : Change the size of MPlayer window according to the size of 
+                  the parent window
+    .Slave mode : Do not set the foucs to MPlayer window even though mouse 
+                  button is clicked
+    .Slave mode : Deliver the mouse events to the parent window
+    .Plugin : Support playlist
+    .Plugin : Support simple status message
+    .Plugin : Support simple interface
+    .Plugin : Support simple popup menu
+    .Plugin : Resize plugin window to switch to full screen 
+
+  - dev-SVN-r26012-OS2-3.3.5 ( 2008/02/17 )
+    .Support Mozilla plugins
+    .Support '-wid' option
+    .Support '-nokeepaspect' option
+    .Support 'MPLAYER_CODECS_DIR' env. var. for Win32 binary codecs
+    .Support 'MPLAYER_PATH' env. var. for Mozilla plugin 
+    .Support 'Enter' on Keypad.
+    .Use libmp3lame library ( Suggestion by Ilya Zakharevich )
+    .Fall back to DIVE if HW is in use when auto-mode
+    .Maintain the position and size of window when switching to full screen
+    .MPlayer crashed abnormally if SNAP overlay is not supported. Fixed.
+    .Dropped support of 'MPLAYER_OPTIONS'
+
+  - dev-SVN-r25844-OS2-3.3.5 ( 2008/01/24 )
+    .Support Win32 binary codecs
+    .Support YV12 and YVU9 acceleration on snap mode.
+    .Support VOCTRL_DRAW_IMAGE
+    .Use scale option from cmd line
+     ( Use '-sws 0' option for the same performance to the previous build )
+    .Changed the order for auto-selection of video mode from wo -> snap -> 
+     dive to snap -> wo -> dive.
+    .On snap mode, when playing YUY2 movie, diagonal stripes are displayed. 
+     Fixed.
+    .On snap mode, movie is not displayed on other mode than 16M colors one. 
+     Fixed.
+    .On snap mode, if a movie size is larger than the acceptable one, MPlayer 
+     crashed. Fixed.
+    .On snap mode, Once restore a window after minimize it, all attributes are 
+     reset. Fixed.
+    .SSE is not detected. Fixed( report by Andreas Ludwig )
+
+  - dev-SVN-r25520-OS2-3.3.5 ( 2007/12/29 )
+    .Support SNAP overlay( snapwrap.dll is needed, Thanks to Mike Forester )
+    .Use XviD library
+    .Regardless of colorkey, boundary of movie is fiiled with black color
+    .Now, MEncoder.exe is shipped as well( Suggestion by Ilya Zakharevich )
+
+  - dev-SVN-r24878-OS2-3.3.5 Refresh ( 2007/11/04 )
+    .On DIVE mode, video is not displayed. Fixed( Report by Mike Forester )
+    ( Recompile libkva to make refresh build )
+
+  - dev-SVN-r24878-OS2-3.3.5 ( 2007/10/28 )
+    .Support -vf screenshot
+    .Support wild cards
+    .Support pre-scaling
+    .Changed the default dir from /usr/local/lib/codecs to /codecs 
+     ( Suggestion by Rainer )
+    .Changed 'MPOPT' env. var. to 'MPLAYER_OPTIONS' ( Suggestion by Rainer )
+    .Use thread
+    .Status line is scrolled. Fixed.
+    .-aspect option doesn't work. Fixed( Report by Mike Forester )
+    .-colorkey option doesn't work. Fixed.
+     ( Use '-colorkey 0x000008' for the same as before )
+
+  - dev-SVN-r23698-OS2-3.3.5 ( 2007/07/01 )
+    .Support 'MPOPT' environment variable
+    .Support exclusive mode of DART
+    .Support VOCTRL_SET_EQUALIER, VOCTRL_GET_EQUALIZER
+     ( Brightness/Contrast/Saturation/Hue )
+    .Added YV12 as supported image format. Performance Improved
+    .Support console input
+    .Support DVD
+    .Support slave mode
+    .Movie is not displayed correctly on WO mode, if you have a video card 
+     such as S3 of T23 laptop which doesn't has ability to downscale. Fixed.
+     ( Thanks to Franz Bakan for his reporting and testing )
+    .Title bar is not activated when using '-fs' option. Fixed
+    .Crashed in enable_cache(). Fixed( enlarge stack size of thread )
+    .Crashed in init_audio_codec(). Fixed( enlarge stack size of program )
+
+  - dev-SVN-r23385-OS2-3.3.5 ( 2007/05/27 )
+    .If cache is used, such as network, MPlayer remains 'Exit T1' status and 
+     system hang. Fixed.
+    
+  - Test ver. ( 2007/05/12 )
+    .Support DIVE/WarpOverlay!, DART 
+ 
+14. How to compile
+------------------
+
+14.1 Requirements...
+--------------------
+
+  .GNU utilities( sh, cp, rm, mkdir, ... )
+  .GNU Make v3.81-k2
+  .GNU patch v2.5.4
+  .GCC v9.1.0
+  .binutils v2.25
+  .OS/2 ToolKit v4.5
+  .nasm v2.14.02
+  .FreeType v2.8( optional, for subtitle/OSD )
+  .zlib v1.2.11( optional, for some codecs )
+  .libmad v0.15.1b( optional, for mp3 )
+  .libpng 1.6.28( optional, for screenshot )
+  .pthread rpm ver.( optional, for thread and Win32 codecs )
+  .Subversion client v1.6.16( optional, to sync with MPlayer latest sources )
+  .git v2.39.1( optional, to clone FFmpeg sources ) 
+  .xvidcore v1.3.4( optional, for XviD encoding )
+  .lame v3.100( optional, for mp3lame encoding )
+  .faac v1.29.9.2( optional, for FAAC encoding )
+  .x264 0.150.4482( optional, for x264 encoding )
+  .libkva v1.2.4( optional, for kva video output )
+  .libkai v2.2.0( optional, for kai audio output )
+  .liba52 v0.7.4( optional, for a52 decoding )
+  .libcdio v0.81( optional, audio CD )
+  .libvpx v1.8.2( optional, for WebM decoding/encoding )
+  .gmp v6.1.2.( optional, for https )
+  .nettle v3.3( optional, for https )
+  .gnutls v3.5.8( optional, for https )
+  
+14.2 Compilation
+----------------
+
+  First of all, you should download the sources from MPlayer 
+homepage(http://www.mplayerhq.hu/design7/dload.html), and extract them into 
+any directory what you want. Then extract 'src.zip' into the directory. And 
+apply 'os2.diff' to the sources as the following if it is provided.
+
+    patch -p0 < os2.diff
+
+  Then, execute 'configure.cmd'.
+  
+  After, execute 'make' as the following.
+
+    make SHELL=/bin/sh
+  
+  Now you can get both 'mplayer.exe' and 'mencoder.exe'.
+  
+15. Official homepage of MPlayer
+--------------------------------
+
+  You can get detailed documents for MPlayer, especially for usage, at 
+  
+    http://www.mplayerhq.hu
+  
+16. Donation
+------------
+
+  If you are satisfied with this program and want to donate to me, please visit
+the following URL.
+
+    http://www.os2.kr/komh/os2factory/
+
+  Or, please click the Ads in the following blog.
+
+    https://lvzuufx.blogspot.com/
+
+17. Contacts...
+---------------
+
+  Please use a issue tracker of github.
+
+    https://github.com/komh/mplayer-os2/issues
+
+KO Myung-Hun
